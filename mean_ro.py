@@ -14,22 +14,20 @@ def log_likelihood(X, beta, gamma):
 def beta_target(X, beta, gamma):
     return (log_likelihood(X, beta, gamma) + 1e-5) * stats.gamma.pdf(beta, a = 1, scale = 1e-3)
 def gamma_target(X, beta, gamma):
-    return (log_likelihood(X, beta, gamma) + 1e-5) * stats.gamma.pdf(gamma, a = 1, scale = 1e-10)
+    return (log_likelihood(X, beta, gamma) + 1e-5) * stats.gamma.pdf(gamma, a = 1, scale = 1e-3)
 
 
-def metropolis_hastings(X, beta_target = beta_target, gamma_target = gamma_target, num_samples = 10000):
+def metropolis_hastings(X, beta_target = beta_target, gamma_target = gamma_target, num_samples = 50000):
     beta_0 = np.random.gamma(shape = 1, scale = 1e-3)
     gamma_0 = np.random.gamma(shape = 1, scale = 1e-3)
     ls = [(beta_0, gamma_0)]
     for i in range(num_samples - 1):
         beta_curr, gamma_curr = ls[-1]
-        beta_proposed =  np.random.rand()
-        gamma_proposed = np.random.rand()
+        beta_proposed =  beta_curr + np.random.rand()
+        gamma_proposed = gamma_curr + np.random.rand()
 
         beta_ratio = beta_target(X, beta_proposed, gamma_curr) / beta_target(X, beta_curr, gamma_curr)
         gamma_ratio = gamma_target(X, beta_curr, gamma_proposed) / gamma_target(X, beta_curr, gamma_curr)
-
-
 
         beta_next = beta_curr if beta_ratio < np.random.rand() else beta_proposed
         gamma_next = gamma_curr if gamma_ratio < np.random.rand() else gamma_proposed
@@ -38,14 +36,9 @@ def metropolis_hastings(X, beta_target = beta_target, gamma_target = gamma_targe
 
 
 data = pd.read_csv("data.csv")
-data = data['infection'].to_numpy()
+confirmed = data['confirmed'].to_numpy()
+recovered = data['recovered'].to_numpy()
+data = confirmed - recovered
 samplers = metropolis_hastings(data)
 print(samplers)
 print(samplers[:, 0].mean() / samplers[:, 1].mean())
-# ro = []
-# print(samplers.mean(axis = 0))
-# for beta, gamma in samplers:
-#     tmp = log_likelihood(data, beta, gamma)
-#     r = beta / gamma  * tmp
-#     ro.append(r)
-# print(sum(ro))

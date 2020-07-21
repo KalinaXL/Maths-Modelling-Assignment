@@ -9,7 +9,7 @@ def visualize(result):
 	plt.rcParams["xtick.major.pad"] = 8
 	plt.rcParams["axes.xmargin"] = 0
 	plt.rcParams["axes.ymargin"] = 0
-	plt.figure(figsize = (18, 12))
+	plt.figure(figsize = (18, 12))### Mathematical modeli
 	for i, (l, c, m) in enumerate(zip(labels, colors, markers)):
 		plt.plot(range(result.shape[0]), result[:, i], color = c)
 		plt.scatter(range(result.shape[0]), result[:, i], marker = m)

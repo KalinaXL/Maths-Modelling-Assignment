@@ -1,7 +1,7 @@
 import numpy as np
 from visualize import visualize
 
-def euler_method(t, coefficient, initial_state, delta_t = 1e-1):
+def euler_method(t, coefficient, initial_state, delta_t = 1):
 	""" Find the approximate solution of SIR model
 		with Euler method
 
@@ -22,7 +22,7 @@ def euler_method(t, coefficient, initial_state, delta_t = 1e-1):
 	S0 = N - I0 - R0
 	beta, gamma = coefficient
 	alpha = beta / N
-	
+	print(alpha)
 	vt1 = np.array([-1, 1, 0])
 	vt2 = np.array([0, -1, 1])
 	result = np.empty((t + 1, 3))
@@ -44,7 +44,7 @@ def euler_method(t, coefficient, initial_state, delta_t = 1e-1):
 
 	return result
 
-def improved_euler_method(t, coefficient, initial_state, delta_t = 1e-1):
+def improved_euler_method(t, coefficient, initial_state, delta_t = 1):
 	""" Find the approximate solution of SIR model
 		with improved Euler method
 
@@ -72,9 +72,6 @@ def improved_euler_method(t, coefficient, initial_state, delta_t = 1e-1):
 	result[0] = np.array([S0, I0, R0])
 	num_steps = int(t / delta_t)
 	num_per_steps = int (1 / delta_t)
-	# for i in range(1, t + 1):
-	# 	delta = alpha * np.prod(result[i - 1, : 2]) * vt1 + gamma * result[i - 1, 1] * vt2
-	# 	result[i] = result[i - 1] + 2 * delta
 
 	for i in range(num_per_steps, num_steps + num_per_steps):
 		idx = i // num_per_steps
@@ -90,5 +87,6 @@ def improved_euler_method(t, coefficient, initial_state, delta_t = 1e-1):
 	return result
 
 np.set_printoptions(formatter={'float': '{: 0.4f}'.format})
-result = euler_method(38, [0.001 * 510, 0.2], [510, 10, 0])
-visualize(result)
+result = improved_euler_method(200, [0.1501379561811565, 1.4710033264978772e-07], [10000000, 1, 0])
+# visualize(result)
+print(result)

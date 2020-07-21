@@ -38,7 +38,8 @@ def metropolis_hastings(X, beta_target = beta_target, gamma_target = gamma_targe
 data = pd.read_csv("data.csv")
 confirmed = data['confirmed'].to_numpy()
 recovered = data['recovered'].to_numpy()
-data = confirmed - recovered
+death = data['death'].to_numpy()
+data = confirmed - recovered - death
 samplers = metropolis_hastings(data)
-print(samplers)
+# print(samplers)
 print(samplers[:, 0].mean() / samplers[:, 1].mean())
